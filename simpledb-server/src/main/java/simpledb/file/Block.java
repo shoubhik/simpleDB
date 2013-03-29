@@ -39,6 +39,7 @@ public class Block {
    }
    
    public boolean equals(Object obj) {
+       if(obj == null) return false;
       Block blk = (Block) obj;
       return filename.equals(blk.filename) && blknum == blk.blknum;
    }
@@ -48,6 +49,7 @@ public class Block {
    }
    
    public int hashCode() {
-      return toString().hashCode();
+//      return toString().hashCode();
+       return filename.hashCode() ^ new Integer(blknum).hashCode();
    }
 }

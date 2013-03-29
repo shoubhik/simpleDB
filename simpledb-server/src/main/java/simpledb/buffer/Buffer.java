@@ -19,6 +19,9 @@ public class Buffer {
    private int pins = 0;
    private int modifiedBy = -1;  // negative means not modified
    private int logSequenceNumber = -1; // negative means no corresponding log record
+    private int id;
+    private int referenceCount;
+
 
    /**
     * Creates a new buffer, wrapping a new 
@@ -35,6 +38,11 @@ public class Buffer {
     * is called first.
     */
    public Buffer() {}
+
+    public Buffer(int id){
+        this.id = id;
+        this.referenceCount = 0;
+    }
    
    /**
     * Returns the integer value at the specified offset of the
@@ -187,4 +195,24 @@ public class Buffer {
       blk = contents.append(filename);
       pins = 0;
    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getReferenceCount() {
+        return referenceCount;
+    }
+
+    public void setReferenceCount(int referenceCount) {
+        this.referenceCount = referenceCount;
+    }
+
+    public void decrementReferenceCount(){
+        --this.referenceCount;
+    }
+
+    public String toString(){
+        return String.valueOf(id);
+    }
 }

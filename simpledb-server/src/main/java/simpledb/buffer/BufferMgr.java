@@ -20,7 +20,7 @@ import simpledb.file.*;
  */
 public class BufferMgr {
    private static final long MAX_TIME = 10000; // 10 seconds
-   private BasicBufferMgr bufferMgr;
+   private IBufferMgr bufferMgr;
    
    /**
     * Creates a new buffer manager having the specified 
@@ -36,7 +36,8 @@ public class BufferMgr {
     * @param numbuffers the number of buffer slots to allocate
     */
    public BufferMgr(int numbuffers) {
-      bufferMgr = new BasicBufferMgr(numbuffers);
+//      bufferMgr = new BasicBufferMgr(numbuffers);
+       bufferMgr = new GClockBufferMgr(numbuffers);
    }
    
    /**
@@ -48,20 +49,10 @@ public class BufferMgr {
     * @return the buffer pinned to that block
     */
    public synchronized Buffer pin(Block blk) {
-      try {
-         long timestamp = System.currentTimeMillis();
          Buffer buff = bufferMgr.pin(blk);
-         while (buff == null && !waitingTooLong(timestamp)) {
-            wait(MAX_TIME);
-            buff = bufferMgr.pin(blk);
-         }
          if (buff == null)
             throw new BufferAbortException();
          return buff;
-      }
-      catch(InterruptedException e) {
-         throw new BufferAbortException();
-      }
    }
    
    /**
@@ -74,20 +65,10 @@ public class BufferMgr {
     * @return the buffer pinned to that block
     */
    public synchronized Buffer pinNew(String filename, PageFormatter fmtr) {
-      try {
-         long timestamp = System.currentTimeMillis();
          Buffer buff = bufferMgr.pinNew(filename, fmtr);
-         while (buff == null && !waitingTooLong(timestamp)) {
-            wait(MAX_TIME);
-            buff = bufferMgr.pinNew(filename, fmtr);
-         }
          if (buff == null)
             throw new BufferAbortException();
          return buff;
-      }
-      catch(InterruptedException e) {
-         throw new BufferAbortException();
-      }
    }
    
    /**
