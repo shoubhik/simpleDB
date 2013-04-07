@@ -40,6 +40,7 @@ public class Block {
    
    public boolean equals(Object obj) {
        if(obj == null) return false;
+       if(this== obj ) return true;
       Block blk = (Block) obj;
       return filename.equals(blk.filename) && blknum == blk.blknum;
    }

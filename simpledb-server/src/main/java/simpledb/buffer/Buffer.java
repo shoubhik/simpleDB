@@ -27,7 +27,7 @@ public class Buffer {
     * Creates a new buffer, wrapping a new 
     * {@link simpledb.file.Page page}.  
     * This constructor is called exclusively by the 
-    * class {@link simpledb.buffer.BasicBufferMgr}.
+    * class {@link $BasicBufferMgr$$}.
     * It depends on  the 
     * {@link simpledb.log.LogMgr LogMgr} object 
     * that it gets from the class
@@ -214,5 +214,12 @@ public class Buffer {
 
     public String toString(){
         return String.valueOf(id);
+    }
+
+    public boolean equals(Object o){
+        if(o == null || !(o instanceof Buffer))
+            return false;
+        Buffer that = (Buffer)o;
+        return this.id == that.id;
     }
 }

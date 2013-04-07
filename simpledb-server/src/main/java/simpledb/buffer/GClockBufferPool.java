@@ -6,6 +6,8 @@ import simpledb.file.Block;
  * User: shoubhik Date: 29/3/13 Time: 1:01 AM
  */
 public class GClockBufferPool {
+
+
     private Buffer[] bufferpool;
     private int numAvailable;
     private int maxRotationAllowed;
@@ -29,7 +31,7 @@ public class GClockBufferPool {
         currBuffIdx %= buffSize;
         int numRotations = 0;
         while(numRotations <= maxRotationAllowed){
-            for(int i = currBuffIdx; i < numAvailable + currBuffIdx ; i++){
+            for(int i = currBuffIdx; i < buffSize + currBuffIdx ; i++){
                 Buffer buffer = bufferpool[i%buffSize];
                 if(!buffer.isPinned() &&
                         buffer.getReferenceCount() == 0){
@@ -73,5 +75,18 @@ public class GClockBufferPool {
                 return buff;
         }
         return null;
+    }
+
+    // for testing purpose only.
+    public void setBufferPool(Buffer[] bufferpool){
+        this.bufferpool = bufferpool;
+    }
+
+    public GClockBufferPool getClone(){
+        return new GClockBufferPool(buffSize, maxRotationAllowed, maxTicks);
+    }
+
+    public Buffer[] getBufferpool() {
+        return bufferpool;
     }
 }

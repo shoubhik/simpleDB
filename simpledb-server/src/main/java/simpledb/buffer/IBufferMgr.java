@@ -11,5 +11,6 @@ interface IBufferMgr {
     Buffer pinNew(String filename, PageFormatter fmtr);
     void unpin(Buffer buff);
     int available();
-
+    boolean containsMapping(Block blk);
+    Buffer getMapping(Block blk);
 }

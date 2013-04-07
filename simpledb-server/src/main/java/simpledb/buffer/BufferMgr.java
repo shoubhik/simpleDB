@@ -36,9 +36,14 @@ public class BufferMgr {
     * @param numbuffers the number of buffer slots to allocate
     */
    public BufferMgr(int numbuffers) {
-//      bufferMgr = new BasicBufferMgr(numbuffers);
-       bufferMgr = new GClockBufferMgr(numbuffers);
+//      bufferMgr = new $BasicBufferMgr$$(numbuffers);
+       bufferMgr = new BasicBufferMgr(numbuffers);
    }
+
+    // constructor for testing purposes only
+    public BufferMgr( IBufferMgr bufferMgr) {
+        this.bufferMgr = bufferMgr;
+    }
    
    /**
     * Pins a buffer to the specified block, potentially
@@ -98,8 +103,22 @@ public class BufferMgr {
    public int available() {
       return bufferMgr.available();
    }
-   
-   private boolean waitingTooLong(long starttime) {
-      return System.currentTimeMillis() - starttime > MAX_TIME;
-   }
+
+    /**
+     * Determines whether the map has a mapping from
+     * the block to some buffer.
+     * @param blk the block to use as a key
+     * @return true if there is a mapping; false otherwise
+     */
+    public boolean containsMapping(Block blk) {
+        return bufferMgr.containsMapping(blk);
+    }
+
+    /* Returns the buffer that the map maps the specified block to.
+    * @param blk the block to use as a key
+    * @return the buffer mapped to if there is a mapping; null otherwise
+    */
+    public Buffer getMapping(Block blk) {
+        return bufferMgr.getMapping(blk);
+    }
 }
