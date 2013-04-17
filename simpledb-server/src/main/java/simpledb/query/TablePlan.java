@@ -12,7 +12,6 @@ public class TablePlan implements Plan {
    private Transaction tx;
    private TableInfo ti;
    private StatInfo si;
-   
    /**
     * Creates a leaf node in the query tree corresponding
     * to the specified table.

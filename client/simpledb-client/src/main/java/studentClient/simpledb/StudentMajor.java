@@ -16,7 +16,8 @@ public class StudentMajor {
 			String qry = "select SName, DName "
 			           + "from DEPT, STUDENT "
 			           + "where MajorId = DId";
-			ResultSet rs = stmt.executeQuery(qry);
+            System.out.println(qry);
+            ResultSet rs = stmt.executeQuery(qry);
 
 			// Step 3: loop through the result set
 			System.out.println("Name\tMajor");

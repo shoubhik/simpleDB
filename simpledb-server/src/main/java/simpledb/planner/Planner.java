@@ -24,6 +24,16 @@ public class Planner {
     * @return the scan corresponding to the query plan
     */
    public Plan createQueryPlan(String qry, Transaction tx) {
+       if(qry.toLowerCase().contains(" union ")){
+           MultiQueryData multiQueryData = new MultiQueryData();
+           String[] selectQueries = qry.toLowerCase().split("union");
+           for(String selectQuery : selectQueries){
+               Parser parser = new Parser(selectQuery);
+               QueryData data = parser.query();
+               multiQueryData.addQueryData(data);
+           }
+           return qplanner.createPlan(multiQueryData, tx);
+       }
       Parser parser = new Parser(qry);
       QueryData data = parser.query();
       return qplanner.createPlan(data, tx);

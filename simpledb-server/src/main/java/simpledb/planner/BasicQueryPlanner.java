@@ -40,4 +40,47 @@ public class BasicQueryPlanner implements QueryPlanner {
       p = new ProjectPlan(p, data.fields());
       return p;
    }
+
+    @Override
+    public Plan createPlan(MultiQueryData multiQueryData, Transaction tx) {
+        UnionPlan unionPlan = new UnionPlan();
+        QueryData createFrom = multiQueryData.getFirstQueryData();
+        for(Iterator<QueryData> i = multiQueryData.iterator(); i.hasNext();){
+            List<Plan> plans = new ArrayList<Plan>();
+            QueryData data = i.next();
+            FieldAliasCollection fieldAliasCollection = getAliases(createFrom , data);
+            for (String tblname : data.tables()) {
+                String viewdef = SimpleDB.mdMgr().getViewDef(tblname, tx);
+                if (viewdef != null)
+                    plans.add(SimpleDB.planner().createQueryPlan(viewdef, tx));
+                else
+                    plans.add(new AliasTablePlanDecorator(tblname, tx,
+                                                          fieldAliasCollection));
+            }
+
+            //Step 2: Create the product of all table plans
+            Plan p = plans.remove(0);
+            for (Plan nextplan : plans)
+                p = new ProductPlan(p, nextplan);
+
+            //Step 3: Add a selection plan for the predicate
+            unionPlan.addPlan(new SelectPlan(p, data.pred()));
+        }
+
+        return new ProjectPlan(unionPlan, createFrom.fields());
+    }
+
+    private FieldAliasCollection getAliases(QueryData createFrom, QueryData convert){
+        FieldAliasCollection fieldAliasCollection = new FieldAliasCollection();
+        Collection<String> source = createFrom.fields();
+        Collection<String> target = convert.fields();
+        Iterator<String> i = source.iterator();
+        Iterator<String> j = target.iterator();
+        while(i.hasNext() && j.hasNext()) {
+            String original = j.next();
+            String alias = i.next();
+            fieldAliasCollection.addAlias(new FieldAlias(original, alias));
+        }
+        return fieldAliasCollection;
+    }
 }

@@ -1,5 +1,6 @@
 package simpledb.opt;
 
+import simpledb.parse.MultiQueryData;
 import simpledb.tx.Transaction;
 import simpledb.query.*;
 import simpledb.opt.TablePlanner;
@@ -45,8 +46,13 @@ public class HeuristicQueryPlanner implements QueryPlanner {
       // Step 4.  Project on the field names and return
       return new ProjectPlan(currentplan, data.fields());
    }
-   
-   private Plan getLowestSelectPlan() {
+
+    @Override
+    public Plan createPlan(MultiQueryData data, Transaction tx) {
+        throw new UnsupportedOperationException();
+    }
+
+    private Plan getLowestSelectPlan() {
       TablePlanner besttp = null;
       Plan bestplan = null;
       for (TablePlanner tp : tableplanners) {

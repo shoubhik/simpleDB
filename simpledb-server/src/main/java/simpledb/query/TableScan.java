@@ -15,6 +15,8 @@ import simpledb.record.*;
 public class TableScan implements UpdateScan {
    private RecordFile rf;
    private Schema sch;
+
+    protected TableScan(){}
    
    /**
     * Creates a new table scan,
