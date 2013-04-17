@@ -8,15 +8,18 @@ import java.util.*;
  * @author Edward Sciore
  */
 public class QueryData {
-   private Collection<String> fields;
    private Collection<String> tables;
    private Predicate pred;
+
+
+
+    private FieldAliasCollection fieldAliasCollection;
    
    /**
     * Saves the field and table list and predicate.
     */
-   public QueryData(Collection<String> fields, Collection<String> tables, Predicate pred) {
-      this.fields = fields;
+   public QueryData(FieldAliasCollection fieldAliasCollection, Collection<String> tables, Predicate pred) {
+       this.fieldAliasCollection = fieldAliasCollection;
       this.tables = tables;
       this.pred = pred;
    }
@@ -26,7 +29,7 @@ public class QueryData {
     * @return a collection of field names
     */
    public Collection<String> fields() {
-      return fields;
+      return this.fieldAliasCollection.getOriginalFields();
    }
    
    /**
@@ -45,11 +48,19 @@ public class QueryData {
    public Predicate pred() {
       return pred;
    }
+
+
+    public FieldAliasCollection getFieldAliasCollection() {
+        return fieldAliasCollection;
+    }
+
+    public Collection<String> getAliasFields(){
+        return this.fieldAliasCollection.getAliasFields();
+    }
    
    public String toString() {
       String result = "select ";
-      for (String fldname : fields)
-         result += fldname + ", ";
+      result += this.fieldAliasCollection.toString();
       result = result.substring(0, result.length()-2); //remove final comma
       result += " from ";
       for (String tblname : tables)

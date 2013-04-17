@@ -25,7 +25,8 @@ public class BasicQueryPlanner implements QueryPlanner {
          if (viewdef != null)
             plans.add(SimpleDB.planner().createQueryPlan(viewdef, tx));
          else
-            plans.add(new TablePlan(tblname, tx));
+            plans.add(new AliasTablePlanDecorator(tblname, tx,
+                                                  data.getFieldAliasCollection()));
       }
       
       //Step 2: Create the product of all table plans
@@ -37,7 +38,7 @@ public class BasicQueryPlanner implements QueryPlanner {
       p = new SelectPlan(p, data.pred());
       
       //Step 4: Project on the field names
-      p = new ProjectPlan(p, data.fields());
+      p = new AliasProjectPlan(p, data.getFieldAliasCollection());
       return p;
    }
 
@@ -67,12 +68,12 @@ public class BasicQueryPlanner implements QueryPlanner {
             unionPlan.addPlan(new SelectPlan(p, data.pred()));
         }
 
-        return new ProjectPlan(unionPlan, createFrom.fields());
+        return new AliasProjectPlan(unionPlan, createFrom.getFieldAliasCollection());
     }
 
     private FieldAliasCollection getAliases(QueryData createFrom, QueryData convert){
         FieldAliasCollection fieldAliasCollection = new FieldAliasCollection();
-        Collection<String> source = createFrom.fields();
+        Collection<String> source = createFrom.getAliasFields();
         Collection<String> target = convert.fields();
         Iterator<String> i = source.iterator();
         Iterator<String> j = target.iterator();

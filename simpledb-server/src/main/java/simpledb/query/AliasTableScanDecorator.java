@@ -40,22 +40,22 @@ public class AliasTableScanDecorator extends TableScan{
      * @see simpledb.query.Scan#getVal(String)
      */
     public Constant getVal(String fldname) {
-        return this.tableScan.getVal(this.fieldAliasCollection.getAliasName(
+        return this.tableScan.getVal(this.fieldAliasCollection.getOriginalName(
                 fldname));
     }
 
     public int getInt(String fldname) {
-        return this.tableScan.getInt(this.fieldAliasCollection.getAliasName(
+        return this.tableScan.getInt(this.fieldAliasCollection.getOriginalName(
                 fldname));
     }
 
     public String getString(String fldname) {
-        return this.tableScan.getString(this.fieldAliasCollection.getAliasName(
+        return this.tableScan.getString(this.fieldAliasCollection.getOriginalName(
                 fldname));
     }
 
     public boolean hasField(String fldname) {
-        return this.tableScan.hasField(this.fieldAliasCollection.getAliasName(
+        return this.tableScan.hasField(this.fieldAliasCollection.getOriginalName(
                 fldname));
     }
 

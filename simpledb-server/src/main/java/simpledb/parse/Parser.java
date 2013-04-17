@@ -55,7 +55,8 @@ public class Parser {
    
    public QueryData query() {
       lex.eatKeyword("select");
-      Collection<String> fields = selectList();
+       FieldAliasCollection fieldAliasCollection = new FieldAliasCollection();
+      Collection<String> fields = selectList(fieldAliasCollection);
       lex.eatKeyword("from");
       Collection<String> tables = tableList();
       Predicate pred = new Predicate();
@@ -63,18 +64,32 @@ public class Parser {
          lex.eatKeyword("where");
          pred = predicate();
       }
-      return new QueryData(fields, tables, pred);
+      return new QueryData(fieldAliasCollection , tables, pred);
    }
    
-   private Collection<String> selectList() {
+   private Collection<String> selectList(FieldAliasCollection fieldAliasCollection) {
       Collection<String> L = new ArrayList<String>();
-      L.add(field());
+       String original = field();
+      L.add(original);
+       if (lex.matchKeyword("as")) {
+           lex.eatKeyword("as");
+           String alias = field();
+           fieldAliasCollection.addAlias(new FieldAlias(original, alias));
+       }
+       else{
+           fieldAliasCollection.addAlias(new FieldAlias(original, original));
+       }
+
       if (lex.matchDelim(',')) {
          lex.eatDelim(',');
-         L.addAll(selectList());
+         L.addAll(selectList(fieldAliasCollection));
       }
       return L;
    }
+
+    private FieldAlias getAlias(String original, String alias){
+        return new FieldAlias(original, alias);
+    }
    
    private Collection<String> tableList() {
       Collection<String> L = new ArrayList<String>();
