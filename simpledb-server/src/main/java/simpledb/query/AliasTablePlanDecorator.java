@@ -20,4 +20,8 @@ public class AliasTablePlanDecorator extends TablePlan{
         return new AliasTableScanDecorator(this.fieldAliasCollection ,
                                            (TableScan)super.open());
     }
+
+    public String toString(){
+        return super.toString();
+    }
 }

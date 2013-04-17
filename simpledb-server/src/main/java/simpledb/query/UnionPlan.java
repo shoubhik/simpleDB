@@ -54,4 +54,15 @@ public class UnionPlan implements Plan{
     public void addPlan(SelectPlan selectPlan){
         this.selectPlanList.add(selectPlan);
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder("union ( ");
+        for(Iterator<SelectPlan> i = this.selectPlanList.iterator(); i.hasNext();){
+            sb.append(i.next().toString());
+            if(i.hasNext())
+                sb.append(", ");
+        }
+        sb.append(" ) ");
+        return sb.toString();
+    }
 }
