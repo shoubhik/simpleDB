@@ -51,6 +51,8 @@ public class TableScan implements UpdateScan {
     * @see simpledb.query.Scan#getVal(String)
     */
    public Constant getVal(String fldname) {
+       if(rf.isNull(fldname))
+           return new NullConstant();
       if (sch.type(fldname) == INTEGER)
          return new IntConstant(rf.getInt(fldname));
       else
@@ -68,8 +70,13 @@ public class TableScan implements UpdateScan {
    public boolean hasField(String fldname) {
       return sch.hasField(fldname);
    }
-   
-   // UpdateScan methods
+
+    @Override
+    public boolean isNull(String fldName) {
+        return rf.isNull(fldName);
+    }
+
+    // UpdateScan methods
    
    /**
     * Sets the value of the specified field, as a Constant.
@@ -79,7 +86,9 @@ public class TableScan implements UpdateScan {
     * @see UpdateScan#setVal(String, Constant)
     */ 
    public void setVal(String fldname, Constant val) {
-      if (sch.type(fldname) == INTEGER)
+       if(val instanceof NullConstant)
+           rf.setNull(fldname);
+      else if (sch.type(fldname) == INTEGER)
          rf.setInt(fldname, (Integer)val.asJavaVal());
       else
          rf.setString(fldname, (String)val.asJavaVal());

@@ -14,6 +14,7 @@ class RemoteResultSetImpl extends UnicastRemoteObject implements RemoteResultSet
    private Scan s;
    private Schema sch;
    private RemoteConnectionImpl rconn;
+    private String lastQueriedField;
 
    /**
     * Creates a RemoteResultSet object.
@@ -49,8 +50,10 @@ class RemoteResultSetImpl extends UnicastRemoteObject implements RemoteResultSet
     * @see simpledb.remote.RemoteResultSet#getInt(String)
     */
    public int getInt(String fldname) throws RemoteException {
+
 		try {
 	      fldname = fldname.toLowerCase(); // to ensure case-insensitivity
+            this.lastQueriedField = fldname;
 	      return s.getInt(fldname);
       }
       catch(RuntimeException e) {
@@ -67,6 +70,7 @@ class RemoteResultSetImpl extends UnicastRemoteObject implements RemoteResultSet
    public String getString(String fldname) throws RemoteException {
 		try {
 	      fldname = fldname.toLowerCase(); // to ensure case-insensitivity
+            this.lastQueriedField = fldname;
 	      return s.getString(fldname);
       }
       catch(RuntimeException e) {
@@ -92,5 +96,9 @@ class RemoteResultSetImpl extends UnicastRemoteObject implements RemoteResultSet
       s.close();
       rconn.commit();
    }
+
+    public boolean wasNull() throws RemoteException {
+        return s.isNull(this.lastQueriedField);
+    }
 }
 

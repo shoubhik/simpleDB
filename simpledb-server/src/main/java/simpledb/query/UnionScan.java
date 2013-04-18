@@ -67,4 +67,9 @@ public class UnionScan implements Scan{
     public boolean hasField(String fldname) {
         return this.selectScans.get(this.selectScans.size() - 1).hasField(fldname);
     }
+
+    @Override
+    public boolean isNull(String fldName) {
+        return this.selectScans.get(idx).isNull(fldName);
+    }
 }

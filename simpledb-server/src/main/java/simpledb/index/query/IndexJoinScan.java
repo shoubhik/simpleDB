@@ -114,8 +114,13 @@ public class IndexJoinScan implements Scan {
    public boolean hasField(String fldname) {
       return ts.hasField(fldname) || s.hasField(fldname);
    }
-   
-   private void resetIndex() {
+
+    @Override
+    public boolean isNull(String fldName) {
+        return s.isNull(fldName) || ts.isNull(fldName);
+    }
+
+    private void resetIndex() {
       Constant searchkey = s.getVal(joinfield);
       idx.beforeFirst(searchkey);
    }

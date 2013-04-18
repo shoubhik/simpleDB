@@ -14,5 +14,7 @@ public interface RemoteResultSet extends Remote {
    public String getString(String fldname) throws RemoteException;
    public RemoteMetaData getMetaData()     throws RemoteException;
    public void close()                     throws RemoteException;
+
+    public boolean wasNull()                 throws RemoteException;
 }
 

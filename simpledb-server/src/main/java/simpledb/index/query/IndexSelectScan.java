@@ -95,4 +95,9 @@ public class IndexSelectScan implements Scan {
    public boolean hasField(String fldname) {
       return ts.hasField(fldname);
    }
+
+    @Override
+    public boolean isNull(String fldName) {
+        return ts.isNull(fldName);
+    }
 }

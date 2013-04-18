@@ -50,6 +50,10 @@ public class Lexer {
    public boolean matchStringConstant() {
       return '\'' == (char)tok.ttype;
    }
+
+    public boolean matchNull(){
+        return matchKeyword("null");
+    }
    
    /**
     * Returns true if the current token is the specified keyword.
@@ -150,6 +154,6 @@ public class Lexer {
       keywords = Arrays.asList("select", "from", "where", "and",
                                "insert", "into", "values", "delete", "update", "set", 
                                "create", "table", "int", "varchar", "view", "as", "index", "on",
-                               "union");
+                               "union", "null");
    }
 }

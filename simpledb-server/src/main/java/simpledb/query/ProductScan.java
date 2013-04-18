@@ -105,4 +105,9 @@ public class ProductScan implements Scan {
    public boolean hasField(String fldname) {
       return s1.hasField(fldname) || s2.hasField(fldname);
    }
+
+    @Override
+    public boolean isNull(String fldName) {
+        return s1.isNull(fldName) || s1.isNull(fldName);
+    }
 }

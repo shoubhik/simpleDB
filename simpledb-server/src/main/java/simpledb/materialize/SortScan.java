@@ -126,8 +126,13 @@ public class SortScan implements Scan {
    public boolean hasField(String fldname) {
       return currentscan.hasField(fldname);
    }
-   
-   /**
+
+    @Override
+    public boolean isNull(String fldName) {
+        return currentscan.isNull(fldName);
+    }
+
+    /**
     * Saves the position of the current record,
     * so that it can be restored at a later time.
     */
