@@ -1,5 +1,6 @@
 package simpledb.record;
 
+import static java.sql.Types.INTEGER;
 import static simpledb.file.Page.*;
 import simpledb.file.Block;
 import simpledb.tx.Transaction;
@@ -9,13 +10,14 @@ import simpledb.tx.Transaction;
  * @author Edward Sciore
  */
 public class RecordPage {
-   public static final int EMPTY = 0, INUSE = 1;
+   public static final int EMPTY = 0, INUSE = 1, NULL = 0xffffffff ;
    
    private Block blk;
    private TableInfo ti;
    private Transaction tx;
    private int slotsize;
    private int currentslot = -1;
+    private int nullInfoPos = -1;
    
    /** Creates the record manager for the specified block.
      * The current record is set to be prior to the first one.
@@ -80,6 +82,7 @@ public class RecordPage {
    public void setInt(String fldname, int val) {
       int position = fieldpos(fldname);
       tx.setInt(blk, position, val);
+       invalidateNullInfoField(fldname);
    }
    
    /**
@@ -91,7 +94,24 @@ public class RecordPage {
    public void setString(String fldname, String val) {
       int position = fieldpos(fldname);
       tx.setString(blk, position, val);
+       invalidateNullInfoField(fldname);
    }
+
+    public void setNull(String fldname){
+       // to implement
+        if(this.nullInfoPos != -1){
+            int nullInfo = tx.getInt(blk, this.nullInfoPos);
+            nullInfo |= 1 << ti.bitLocation(fldname);
+            tx.setInt(blk, this.nullInfoPos, nullInfo);
+        }
+    }
+
+    public boolean isNull(String fldName){
+        // to implement
+        if(this.nullInfoPos == -1 ) return true;
+        int nullVal = tx.getInt(blk, this.nullInfoPos);
+        return ((nullVal >> ti.bitLocation(fldName)) & 0x00000001) == 1;
+    }
    
    /**
     * Deletes the current record.
@@ -114,7 +134,8 @@ public class RecordPage {
       boolean found = searchFor(EMPTY);
       if (found) {
          int position = currentpos();
-         tx.setInt(blk, position, INUSE);
+          this.nullInfoPos  = position;
+         tx.setInt(blk, position, NULL);
       }
       return found;
    }
@@ -139,6 +160,16 @@ public class RecordPage {
    private int currentpos() {
       return currentslot * slotsize;
    }
+
+    private void invalidateNullInfoField(String fldName){
+        if (this.nullInfoPos != -1) {
+            int nullVal = tx.getInt(blk, this.nullInfoPos);
+            int temp = 1 << ti.bitLocation(fldName);
+            temp = ~temp & 0xffffffff;
+            nullVal &= temp;
+            tx.setInt(blk, this.nullInfoPos, nullVal);
+        }
+    }
    
    private int fieldpos(String fldname) {
       int offset = INT_SIZE + ti.offset(fldname);
@@ -153,8 +184,12 @@ public class RecordPage {
       currentslot++;
       while (isValidSlot()) {
          int position = currentpos();
-         if (tx.getInt(blk, position) == flag)
+          int val = tx.getInt(blk, position);
+          if(flag == INUSE) val &= 0x00000001;
+         if (val == flag){
+             this.nullInfoPos = position;
             return true;
+         }
          currentslot++;
       }
       return false;

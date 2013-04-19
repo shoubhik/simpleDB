@@ -54,4 +54,7 @@ public interface Scan {
     * @return true if the scan has that field
     */
    public boolean  hasField(String fldname);
+
+
+    public boolean isNull(String fldName);
 }

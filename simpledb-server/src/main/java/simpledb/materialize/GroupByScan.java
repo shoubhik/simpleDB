@@ -128,5 +128,10 @@ public class GroupByScan implements Scan {
          return true;
       return false;
    }
+
+    @Override
+    public boolean isNull(String fldName) {
+        return s.isNull(fldName);
+    }
 }
 

@@ -103,8 +103,14 @@ public class MultiBufferProductScan implements Scan {
    public boolean hasField(String fldname) {
       return prodscan.hasField(fldname);
    }
-   
-   private boolean useNextChunk() {
+
+    @Override
+    public boolean isNull(String fldName) {
+        throw new UnsupportedOperationException();
+        //return false;
+    }
+
+    private boolean useNextChunk() {
       if (rhsscan != null)
          rhsscan.close();
       if (nextblknum >= filesize)

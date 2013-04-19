@@ -11,6 +11,7 @@ import java.util.*;
 public class TableInfo {
    private Schema schema;
    private Map<String,Integer> offsets;
+    private Map<String, Integer> recordOrder;
    private int recordlen;
    private String tblname;
    
@@ -26,9 +27,13 @@ public class TableInfo {
       this.schema = schema;
       this.tblname = tblname;
       offsets  = new HashMap<String,Integer>();
+       recordOrder = new HashMap<String, Integer>();
       int pos = 0;
+       int counter = 1;
       for (String fldname : schema.fields()) {
          offsets.put(fldname, pos);
+          recordOrder.put(fldname, counter);
+          counter++;
          pos += lengthInBytes(fldname);
       }
       recordlen = pos;
@@ -44,11 +49,13 @@ public class TableInfo {
     * @param offsets the already-calculated offsets of the fields within a record
     * @param recordlen the already-calculated length of each record
     */
-   public TableInfo(String tblname, Schema schema, Map<String,Integer> offsets, int recordlen) {
+   public TableInfo(String tblname, Schema schema, Map<String,Integer> offsets,
+                    Map<String,Integer> recordOrder, int recordlen) {
       this.tblname   = tblname;
       this.schema    = schema;
       this.offsets   = offsets;
       this.recordlen = recordlen;
+       this.recordOrder = recordOrder;
    }
    
    /**
@@ -77,6 +84,10 @@ public class TableInfo {
    public int offset(String fldname) {
       return offsets.get(fldname);
    }
+
+    public int bitLocation(String fldname){
+        return this.recordOrder.get(fldname);
+    }
    
    /**
     * Returns the length of a record, in bytes.

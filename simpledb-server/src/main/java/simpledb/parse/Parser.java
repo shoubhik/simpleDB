@@ -22,7 +22,11 @@ public class Parser {
    }
    
    public Constant constant() {
-      if (lex.matchStringConstant())
+       if(lex.matchNull()){
+           lex.eatKeyword("null");
+           return new NullConstant();
+       }
+      else if (lex.matchStringConstant())
          return new StringConstant(lex.eatStringConstant());
       else
          return new IntConstant(lex.eatIntConstant());

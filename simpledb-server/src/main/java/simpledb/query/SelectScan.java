@@ -63,8 +63,13 @@ public class SelectScan implements UpdateScan {
    public boolean hasField(String fldname) {
       return s.hasField(fldname);
    }
-   
-   // UpdateScan methods
+
+    @Override
+    public boolean isNull(String fldName) {
+        return s.isNull(fldName);
+    }
+
+    // UpdateScan methods
    
    public void setVal(String fldname, Constant val) {
       UpdateScan us = (UpdateScan) s;

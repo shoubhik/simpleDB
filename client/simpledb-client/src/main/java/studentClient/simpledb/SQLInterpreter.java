@@ -68,10 +68,16 @@ public class SQLInterpreter {
 					String fldname = md.getColumnName(i);
 					int fldtype = md.getColumnType(i);
 					String fmt = "%" + md.getColumnDisplaySize(i);
-					if (fldtype == Types.INTEGER)
-						System.out.format(fmt + "d", rs.getInt(fldname));
-					else
-						System.out.format(fmt + "s", rs.getString(fldname));
+					if (fldtype == Types.INTEGER) {
+                        int intval = rs.getInt(fldname);
+                        if(rs.wasNull()) System.out.format(fmt + "s", "null");
+                        else System.out.format(fmt + "d", intval);
+                    }
+					else {
+                        String strval = rs.getString(fldname);
+                        if(rs.wasNull()) System.out.format(fmt + "s", "null");
+						else System.out.format(fmt + "s", strval);
+                    }
 				}
 				System.out.println();
 			}

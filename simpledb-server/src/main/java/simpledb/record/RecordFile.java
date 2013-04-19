@@ -100,6 +100,14 @@ public class RecordFile {
    public void setString(String fldname, String val) {
       rp.setString(fldname, val);
    }
+
+    public void setNull(String fldname){
+        rp.setNull(fldname);
+    }
+
+    public boolean isNull(String fldName){
+        return rp.isNull(fldName);
+    }
    
    /**
     * Deletes the current record.
