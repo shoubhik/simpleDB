@@ -96,6 +96,12 @@ public class AliasTableScanDecorator extends TableScan{
         this.tableScan.moveToRid(rid);
     }
 
+    @Override
+    public boolean isNull(String fldName) {
+        return this.tableScan.isNull(this.fieldAliasCollection.getOriginalName(
+                fldName));
+    }
+
 
 
 }
