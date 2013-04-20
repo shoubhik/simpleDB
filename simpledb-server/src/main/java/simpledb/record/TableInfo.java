@@ -13,6 +13,7 @@ public class TableInfo {
    private Map<String,Integer> offsets;
    private int recordlen;
    private String tblname;
+    private Map<String, Integer> recordOrder;
    
    /**
     * Creates a TableInfo object, given a table name
@@ -26,10 +27,14 @@ public class TableInfo {
       this.schema = schema;
       this.tblname = tblname;
       offsets  = new HashMap<String,Integer>();
+       recordOrder = new HashMap<String, Integer>();
       int pos = 0;
+       int counter = 1;
       for (String fldname : schema.fields()) {
          offsets.put(fldname, pos);
          pos += lengthInBytes(fldname);
+          recordOrder.put(fldname, counter);
+          counter++;
       }
       recordlen = pos;
    }
@@ -44,11 +49,13 @@ public class TableInfo {
     * @param offsets the already-calculated offsets of the fields within a record
     * @param recordlen the already-calculated length of each record
     */
-   public TableInfo(String tblname, Schema schema, Map<String,Integer> offsets, int recordlen) {
+   public TableInfo(String tblname, Schema schema, Map<String,Integer> offsets,
+                    Map<String,Integer> recordOrder, int recordlen) {
       this.tblname   = tblname;
       this.schema    = schema;
       this.offsets   = offsets;
       this.recordlen = recordlen;
+       this.recordOrder = recordOrder;
    }
    
    /**
@@ -85,8 +92,13 @@ public class TableInfo {
    public int recordLength() {
       return recordlen;
    }
-   
-   private int lengthInBytes(String fldname) {
+
+    public int bitLocation(String fldname){
+        return this.recordOrder.get(fldname);
+    }
+
+
+    private int lengthInBytes(String fldname) {
       int fldtype = schema.type(fldname);
       if (fldtype == INTEGER)
          return INT_SIZE;

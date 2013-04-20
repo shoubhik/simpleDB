@@ -97,6 +97,8 @@ public class TableMgr {
       RecordFile fcatfile = new RecordFile(fcatInfo, tx);
       Schema sch = new Schema();
       Map<String,Integer> offsets = new HashMap<String,Integer>();
+       Map<String,Integer> recordOrder = new HashMap<String,Integer>();
+       int counter = 1;
       while (fcatfile.next())
          if (fcatfile.getString("tblname").equals(tblname)) {
          String fldname = fcatfile.getString("fldname");
@@ -105,8 +107,10 @@ public class TableMgr {
          int offset     = fcatfile.getInt("offset");
          offsets.put(fldname, offset);
          sch.addField(fldname, fldtype, fldlen);
+             recordOrder.put(fldname, counter);
+             counter++;
       }
       fcatfile.close();
-      return new TableInfo(tblname, sch, offsets, reclen);
+       return new TableInfo(tblname, sch, offsets, recordOrder, reclen);
    }
 }

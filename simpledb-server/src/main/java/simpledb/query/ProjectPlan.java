@@ -68,4 +68,8 @@ public class ProjectPlan implements Plan {
    public Schema schema() {
       return schema;
    }
+
+    public String toString(){
+        return "project ( " + p.toString() + ", { "  + schema().toString() + " }) ";
+    }
 }

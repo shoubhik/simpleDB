@@ -144,8 +144,17 @@ public class RecordFile {
       int id = rp.currentId();
       return new RID(currentblknum, id);
    }
-   
-   private void moveTo(int b) {
+
+    public void setNull(String fldname){
+        rp.setNull(fldname);
+    }
+
+    public boolean isNull(String fldName){
+        return rp.isNull(fldName);
+    }
+
+
+    private void moveTo(int b) {
       if (rp != null)
          rp.close();
       currentblknum = b;
