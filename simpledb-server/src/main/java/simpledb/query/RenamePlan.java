@@ -10,43 +10,41 @@ import simpledb.tx.Transaction;
 public class RenamePlan implements Plan{
 
     private AliasCollection aliasCollection;
-    private TablePlan tablePlan;
-    private String tblName;
+    private Plan p;
 
-    public RenamePlan(String tblname, Transaction tx, String original, String renameTo){
+    public RenamePlan(Plan plan, String original, String renameTo){
         this.aliasCollection = new AliasCollection();
         this.aliasCollection.addAlias(original, renameTo);
-        this.tablePlan = new TablePlan(tblname, tx);
-        this.tblName = tblname;
+        this.p = plan;
 
     }
 
     @Override
     public Scan open() {
-        return new RenameScan(tablePlan.open(), aliasCollection);
+        return new RenameScan(p.open(), aliasCollection);
     }
 
     @Override
     public int blocksAccessed() {
-        return this.tablePlan.blocksAccessed();
+        return this.p.blocksAccessed();
     }
 
     @Override
     public int recordsOutput() {
-        return this.tablePlan.recordsOutput();
+        return this.p.recordsOutput();
     }
 
     @Override
     public int distinctValues(String fldname) {
-        return this.tablePlan.distinctValues(this.aliasCollection.getOriginal(fldname));
+        return this.p.distinctValues(this.aliasCollection.getOriginal(fldname));
     }
 
     @Override
     public Schema schema() {
-        return new AliasSchemaDecorator(this.aliasCollection, this.tablePlan.schema());
+        return new AliasSchemaDecorator(this.aliasCollection, this.p.schema());
     }
 
     public String toString(){
-        return "rename (" +  tblName + ")" + ", {"  + aliasCollection.toString() + " }";
+        return "rename (" +  p.toString() + ")" + ", {"  + aliasCollection.toString() + " }";
     }
 }

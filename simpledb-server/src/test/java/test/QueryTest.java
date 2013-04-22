@@ -113,7 +113,8 @@ public class QueryTest {
     @Test
     public void testRename(){
         Transaction tx = new Transaction();
-        Plan p = new RenamePlan("test", tx, "id", "bankai");
+        Plan p1 = new TablePlan("test", tx);
+        Plan p = new RenamePlan(p1, "id", "bankai");
         Scan s = p.open();
         while(s.next()) System.out.println(s.getInt("bankai"));
         System.out.println(p.schema().fields());
