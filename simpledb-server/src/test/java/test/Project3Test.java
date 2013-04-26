@@ -13,7 +13,7 @@ public class Project3Test {
         SimpleDB.init("Project3testdb");
         String tblname = "T";
         Transaction tx = new Transaction();
-        createTable(tblname, tx);
+//        createTable(tblname, tx);
         tx.commit();
         tx = new Transaction();
         Plan p = new TablePlan(tblname, tx);
@@ -70,6 +70,17 @@ public class Project3Test {
         Plan p6 = new SelectPlan(p5, joinpred);
 
         print(p6, "Here are the records that have the same B-value as record 33:");
+    }
+
+    private static void printAlRecords(Plan p){
+
+        Collection<String> flds = Arrays.asList("A","B");
+        Plan p3 = new ProjectPlan(p, flds);
+        Scan s = p3.open();
+        while(s.next()){
+            System.out.println(s.getInt("A") + "\t\t" +s.getString("B"));
+        }
+
     }
 
     private static void query2(Plan p) {
