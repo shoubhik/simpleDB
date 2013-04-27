@@ -18,7 +18,7 @@ public class Project3Test {
         tx = new Transaction();
         Plan p = new TablePlan(tblname, tx);
         query1(p);
-//        query2(p);
+        query2(p);
 //        addNullValues(p);
 //        printAlRecords(p);
 //        queryForNull(p);

@@ -85,7 +85,7 @@ public class RecordPage {
 
     public boolean isNull(String fldName){
         // to implement
-        if(this.nullInfoPos == -1 ) return true;
+        if(this.nullInfoPos == -1 ) return false;
         int nullVal = tx.getInt(blk, this.nullInfoPos);
         return ((nullVal >> ti.bitLocation(fldName)) & 0x00000001) == 1;
     }
