@@ -72,6 +72,6 @@ public class TablePlan implements Plan {
    }
 
     public String toString(){
-        return this.tableName;
+        return "(" +this.tableName + ")";
     }
 }

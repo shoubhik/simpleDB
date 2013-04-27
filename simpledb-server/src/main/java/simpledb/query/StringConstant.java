@@ -24,6 +24,7 @@ public class StringConstant implements Constant {
    }
    
    public boolean equals(Object obj) {
+       if(obj == null ||!(obj instanceof  StringConstant)) return false;
       StringConstant sc = (StringConstant) obj;
       return sc != null && val.equals(sc.val);
    }

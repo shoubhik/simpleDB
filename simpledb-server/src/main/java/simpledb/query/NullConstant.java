@@ -13,4 +13,12 @@ public class NullConstant implements Constant{
     public int compareTo(Constant o) {
         return o instanceof NullConstant ? 0 : 1;
     }
+
+    public boolean equals(Object o){
+        return o instanceof NullConstant;
+    }
+
+    public String toString() {
+        return asJavaVal();
+    }
 }

@@ -5,6 +5,7 @@ import simpledb.query.AliasCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 
 import static java.sql.Types.INTEGER;
 import static java.sql.Types.VARCHAR;
@@ -121,6 +122,10 @@ public class AliasSchemaDecorator extends Schema{
 
     private String getName(String fldName){
         return this.aliasCollection.getOriginal(fldName);
+    }
+
+    public String toString(){
+       return aliasCollection.toString();
     }
 
 }

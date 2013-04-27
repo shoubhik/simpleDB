@@ -14,12 +14,18 @@ public class Project3Test {
         String tblname = "T";
         Transaction tx = new Transaction();
 //        createTable(tblname, tx);
-        tx.commit();
+//        tx.commit();
         tx = new Transaction();
         Plan p = new TablePlan(tblname, tx);
         query1(p);
-        query2(p);
+//        query2(p);
+//        addNullValues(p);
+//        printAlRecords(p);
+//        queryForNull(p);
+//        countNulls(p);
+//        query3(p);
         tx.commit();
+
     }
 
     private static void createTable(String tblname, Transaction tx) {
@@ -78,7 +84,9 @@ public class Project3Test {
         Plan p3 = new ProjectPlan(p, flds);
         Scan s = p3.open();
         while(s.next()){
-            System.out.println(s.getInt("A") + "\t\t" +s.getString("B"));
+            Constant c1 = s.getVal("A");
+            Constant c2 = s.getVal("B");
+            System.out.println(c1.asJavaVal() + "\t\t" +c2.asJavaVal());
         }
 
     }
@@ -108,15 +116,94 @@ public class Project3Test {
         print(p4, "Here are the records that have the B-value 'b1' or 'b9': ");
     }
 
+    private static void query3(Plan p) {
+        // Query 2: Print the A-values of records
+        // whose B-values are either "b1" or "b9".
+
+        // A select predicate for "B = 'b1' "
+        Expression lhs = new FieldNameExpression("B");
+        Constant c = new StringConstant("b1");
+        Expression rhs = new ConstantExpression(c);
+        Term t = new Term(lhs, rhs);
+        Predicate pred1 = new Predicate(t);
+
+        // A select predicate for "B = 'b9' "
+        Expression lhs2 = new FieldNameExpression("B");
+        Constant c2 = new StringConstant("b9");
+        Expression rhs2 = new ConstantExpression(new NullConstant());
+        Term t2 = new Term(lhs2, rhs2);
+        Predicate pred2 = new Predicate(t2);
+
+        Plan p2 = new SelectPlan(p, pred1);
+        Plan p3 = new SelectPlan(p, pred2);
+        Plan p4 = new UnionPlan(p2, p3);
+
+        print(p4, "Here are the records that have the B-value 'b1' or B is null: ");
+        System.out.println("str = "  + p4.toString().replace(" ", ""));
+    }
+
     private static void print(Plan p, String msg) {
         System.out.println(msg);
         Scan s = p.open();
         while (s.next()) {
-            int a = s.getInt("A");
-            System.out.print(a + " ");
+            Constant a = s.getVal("A");
+            System.out.print(a.asJavaVal() + " ");
         }
         s.close();
         System.out.println("\n");
 
+    }
+
+    public static void addNullValues(Plan p){
+        UpdateScan us = (UpdateScan) p.open();
+        us.insert();
+        us.setVal("A", new NullConstant());
+        us.setVal("B", new StringConstant("bankai"));
+
+        us.insert();
+        us.setVal("A", new IntConstant(400));
+        us.setVal("B", new NullConstant());
+
+
+        us.insert();
+        us.setVal("A", new NullConstant());
+        us.setVal("B", new NullConstant());
+    }
+
+    public static void queryForNull(Plan p){
+        Expression lhs = new FieldNameExpression("A");
+        Constant c = new NullConstant();
+        Expression rhs = new ConstantExpression(c);
+        Term t = new Term(lhs, rhs);
+        Predicate pred1 = new Predicate(t);
+        Plan p2 = new SelectPlan(p, pred1);
+
+        print(p2, "Null values where B is null are: ");
+
+    }
+
+    public static void countNulls(Plan p){
+        Expression lhs = new FieldNameExpression("A");
+        Constant c = new NullConstant();
+        Expression rhs = new ConstantExpression(c);
+        Term t = new Term(lhs, rhs);
+        Predicate pred1 = new Predicate(t);
+        Plan p2 = new SelectPlan(p, pred1);
+        int count = 0;
+        Scan s = p2.open();
+        while(s.next()) count++;
+        System.out.println("num records where A is null is :"  + count);
+        count = 0;
+
+        Expression lhs1 = new FieldNameExpression("B");
+        Constant c1 = new NullConstant();
+        Expression rhs1 = new ConstantExpression(c1);
+        Term t1 = new Term(lhs1, rhs1);
+        Predicate pred2 = new Predicate(t1);
+        pred1.conjoinWith(pred2);
+        Plan p3 = new SelectPlan(p, pred1);
+        Scan s1 = p3.open();
+        while(s1.next()) count++;
+        System.out.println("num records where A and B are null is :"  + count);
     }
 }

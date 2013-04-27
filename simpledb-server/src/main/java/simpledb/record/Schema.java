@@ -123,4 +123,14 @@ public class Schema {
          this.length = length;
       }
    }
+
+    public String toString(){
+        Set<String> flds = info.keySet();
+        StringBuilder sb = new StringBuilder();
+        for(Iterator<String> i = flds.iterator(); i.hasNext();){
+            sb.append(i.next());
+            if(i.hasNext()) sb.append(",");
+        }
+        return sb.toString();
+    }
 }

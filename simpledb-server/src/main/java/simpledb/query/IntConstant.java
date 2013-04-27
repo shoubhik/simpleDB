@@ -24,6 +24,7 @@ public class IntConstant implements Constant {
    }
    
    public boolean equals(Object obj) {
+       if(obj == null ||!(obj instanceof  IntConstant)) return false;
       IntConstant ic = (IntConstant) obj;
       return ic != null && val.equals(ic.val);
    }

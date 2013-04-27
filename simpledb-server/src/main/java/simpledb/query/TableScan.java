@@ -49,9 +49,9 @@ public class TableScan implements UpdateScan {
     * @see simpledb.query.Scan#getVal(String)
     */
    public Constant getVal(String fldname) {
-       if(rf.isNull(fldname))
+      if(rf.isNull(fldname))
            return new NullConstant();
-      if (sch.type(fldname) == INTEGER)
+      else if (sch.type(fldname) == INTEGER)
          return new IntConstant(rf.getInt(fldname));
       else
          return new StringConstant(rf.getString(fldname));
